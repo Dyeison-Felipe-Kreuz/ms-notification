@@ -4,9 +4,10 @@ import { User } from './entities/users.entity';
 import UserExternalController from './user-external.controller';
 import { UserService } from './user.service';
 import { UserRepository } from './repositories/users.repository';
+import { NotificationModule } from '../notifications/notifications.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User]), NotificationModule],
   controllers: [UserExternalController],
   providers: [UserService, UserRepository],
 })

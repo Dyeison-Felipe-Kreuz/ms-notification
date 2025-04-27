@@ -1,13 +1,18 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      url: 'postgresql://postgres:rKTZeHoqqKpNbRRoDUVCrxwleCKcNqJN@trolley.proxy.rlwy.net:17320/railway',
-      synchronize: true,
-      autoLoadEntities: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        url: configService.get<string>('POSTGRES_PUBLIC_URL'),
+        synchronize: true,
+        autoLoadEntities: true,
+      }),
     }),
   ],
 })

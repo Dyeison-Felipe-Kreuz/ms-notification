@@ -3,24 +3,20 @@ import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
 
-export const GlobalConfig = async (app: INestApplication) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+export const GlobalConfig = async (app: INestApplication, configService: ConfigService) => {
   const configSwagger: DocumentBuilder = new DocumentBuilder()
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     .setTitle('notifications')
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     .setVersion('1.0')
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     .addTag('ms-notifications');
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+   
   const configBuilder = configSwagger.build();
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+   
   const document = SwaggerModule.createDocument(app, configBuilder);
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   SwaggerModule.setup('docs', app, document);
 
   const logger = new Logger('RedisClient');
@@ -30,9 +26,9 @@ export const GlobalConfig = async (app: INestApplication) => {
     {
       transport: Transport.REDIS,
       options: {
-        host: 'maglev.proxy.rlwy.net',
-        port: 29529,
-        password: 'iLtUkvcaNVREjOHDgvtfWvckFXZbiewT',
+        host: configService.get<string>('REDIS_HOST'),
+        port: configService.get<number>('REDIS_PORT'),
+        password: configService.get<string>('REDIS_PASSWORD'),
         retryAttempts: 5, // Tentativas de reconexão
         retryDelay: 3000, // Intervalo entre tentativas
       },

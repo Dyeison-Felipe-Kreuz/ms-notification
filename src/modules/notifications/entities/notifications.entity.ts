@@ -20,13 +20,9 @@ export class Notification {
   @Column()
   message: string;
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   @ManyToOne(() => User, (user) => user.notifications, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' }) // corresponde ao campo FK
   user: User;
-
-  @Column()
-  userId: string;
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
